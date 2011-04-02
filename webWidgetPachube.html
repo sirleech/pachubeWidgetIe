@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="styles.css" />
@@ -14,7 +13,8 @@ var blue = "#0099FF";
 var lightBlue = "#BAE1EA"
 var black = "#000000";
 
-var apikey = "5df9aa3f6623b1958a43632ea16397046f0affd89393649257a3039e6f854b6a";
+// pachube user: sirleech
+var apikey = "YOUR_PACHUBE_API_KEY_HERE";
 var feedid;
 var queryFreq = 15; //seconds
 
@@ -63,7 +63,7 @@ function refresh()
       		+ pachubeDate.toTimeString();
 
       var statusColor = status.text;
-      var temperatureColor = value.text
+      var temperatureColor = value.text;
 
 	  if (status.text == "live") 	{
          statusColor = statusColor.fontcolor(green);
@@ -125,7 +125,8 @@ function setElement(domElementId,value)
 
 <body onload="init();">
 
-<h1><span id="dom_feedTitle">NO CONNECTION</span></h1>
+<span class="subheader" id="dom_feedTitle">NO CONNECTION</span>
+<br/>
 <span class="feedId">Pachube ID: <span id="dom_feedid">NO CONNECTION</span></span>
 <br/>
 
@@ -149,7 +150,7 @@ updated
 </form>
 
 
-<span class="footer">pachube_ie6_v9b.html</span>
+<span class="footer">pachube_tyranosaur_01.html</span>
 <br/>
 <span class="footer" id="dom_apikey">Apikey</span>
 </body>
