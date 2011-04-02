@@ -1,0 +1,1 @@
+A widget for showing pachube feeds. Use with IE only due to the AJAX cross-domain security policy of other browsers.
