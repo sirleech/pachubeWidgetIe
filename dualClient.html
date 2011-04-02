@@ -1,0 +1,45 @@
+<html>
+    <head>        
+    	<link rel="stylesheet" type="text/css" href="styles.css" />  
+        <script type="text/javascript">
+		var timer;
+        function init()
+        {
+           timer = window.setInterval("clock()",1000);
+        }
+		////////////////////////////////////////////
+      	function clock()
+      	{
+        	var currentDate = new Date();
+         	setElement("dom_localTime",currentDate.toDateString() 
+                   + " " +  currentDate.toTimeString());
+      	}
+		////////////////////////////////////////////
+      	function setElement(domElementId,value)
+      	{
+      	   var elem = document.getElementById(domElementId);
+      	   elem.innerHTML = value;   
+      	}
+        </script>            
+    </head>
+   <body onload="init()">    
+	 <span id="dom_localTime">NNNNN</span>
+	local time
+	<br /> 
+	
+      <IFRAME SRC="pachube_ie6_v9b.html" WIDTH=340 HEIGHT=400>
+         If you can see this, your browser doesn't 
+         understand IFRAME.  However, we'll still 
+         <A HREF="hello.html">link</A> 
+         you to the file.
+      </IFRAME>
+      
+      <IFRAME SRC="pachube_ie6_v9b.html" WIDTH=340 HEIGHT=400>
+         If you can see this, your browser doesn't 
+         understand IFRAME.  However, we'll still 
+         <A HREF="hello.html">link</A> 
+         you to the file.
+      </IFRAME>
+         
+   </body>
+</html>

@@ -1,0 +1,31 @@
+<html>
+<head>
+<script type="text/javascript">
+	function Reload () {
+		var f = document.getElementById('pachubeIFrame');
+		f.src = f.src;
+	}
+
+	function alertIFrame(){
+		f = document.getElementById('pachubeIFrame');
+		alert(f.innerHTML);
+	}
+
+	//function uploadform() {
+	//	alert(document.getElementById('target_upload').innerHTML);
+	//	document.getElementById('text').innerHTML = document
+	//			.getElementById('target_upload').innerHTML;
+	//}
+</script>
+</head>
+<body>
+<IFRAME id="pachubeIFrame"
+	SRC="http://www.pachube.com/api/feeds/8281.xml" WIDTH=700 HEIGHT=200>
+	
+If you can see this, your browser doesn't understand IFRAME. However,
+we'll still <A HREF="hello.html">link</A> you to the file. </IFRAME>
+
+<br>
+<input type="button" value="Reload" onclick="Reload();alertIFrame();">
+</body>
+</html>

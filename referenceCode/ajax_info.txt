@@ -1,0 +1,3 @@
+Hello Ajax!
+
+The content was changed with XMLHTTPRequest.

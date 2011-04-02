@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="styles.css" />
+<title>pachube_ie6_v6.html</title>
+<script>
+
+
+var i = Number(1);
+var timer; var timer2;
+
+////////////////////////////////////////////
+function init()
+{
+   seconds = 15;
+   ms = seconds * 1000; 
+   timer = window.setInterval("loop()",ms);
+   timer2 = window.setInterval("clock()",1000);
+}
+
+///////////////////////////////////////////
+function loop()
+{      
+   // this only works in IE
+   xml_8281 = new ActiveXObject('msxml.domdocument');
+   xml_8281.async = true;
+   xml_8281.load("http://www.pachube.com/api/feeds/8281.xml");   
+   
+   xml_8281.onreadystatechange = 
+      function() { 
+         refresh(xml_8281,"8281");
+      }
+}
+
+////////////////////////////////////////////
+function clock()
+{
+   var currentDate = new Date();
+   setElement("dom_localTime",currentDate.toDateString() 
+             + " " +  currentDate.toTimeString());
+}
+
+////////////////////////////////////////////
+function refresh(XHRObject,feedId)
+{
+   var date = new Date();
+   
+   var status = XHRObject.selectSingleNode("//eeml/environment/status");
+   var reqs = i.toString();
+   var updated = XHRObject.selectSingleNode("//eeml/environment/@updated");
+   var localDateTime = new Date("1 July 2010");   
+   var celcius = XHRObject.selectSingleNode("//eeml/environment/data[0]/value")
+   var successes = XHRObject.selectSingleNode("//eeml/environment/data[3]/value")
+   var environment = XHRObject.selectSingleNode("//eeml/environment");
+     
+   var pachubeDate = pachubeDateToJsDate(updated.text);
+   var pachubeDtsStr = pachubeDate.toDateString() + " " 
+   		+ pachubeDate.toTimeString();
+   
+   setElement("dom_status_" + feedId,status.text);
+   setElement("dom_reqs_" + feedId,reqs);
+   setElement("dom_updated_" + feedId,pachubeDtsStr);
+   setElement("dom_celcius_" + feedId,celcius.text);
+   setElement("dom_successes_" + feedId,successes.text);     
+   
+   i++;
+}
+
+////////////////////////////////////////////
+function pachubeDateToJsDate(pachubeStr)
+{
+	//pachube XML update date
+    // 2010-07-01T21:40:57Z
+	// 01234567890123456789
+	
+	var year = pachubeStr.substring(0,4);
+	var month = pachubeStr.substring(5,7);
+	month --;
+    var day = pachubeStr.substring(8,10);
+	var hours = pachubeStr.substring(11,13);	
+	var minutes = pachubeStr.substring(14,16);
+	var seconds = pachubeStr.substring(17,19);
+
+   	var date = new Date(year, month, day, hours, minutes, seconds);    
+    
+    // +10 hours = +36,000,000 ms = offset for Canberra UTM + 10:00   
+    var offsetMs = date.getTimezoneOffset() * 1000 * 60 * -1;
+    date.setTime(date.getTime() + offsetMs);    
+	return date;
+}
+
+
+////////////////////////////////////////////
+function setElement(domElementId,value)
+{
+   var elem = document.getElementById(domElementId);
+   elem.innerHTML = value;   
+}
+
+
+</script>
+</head>
+
+<body>
+  
+   <span class="normal">
+      <span id="dom_localTime">NO CONNECTION</span> local time
+      <br/>
+      <br/>
+      
+      Status: <b><span id="dom_status_8281">NO CONNECTION</span></b>
+      <br/>
+      <span id="dom_reqs_8281">NO CONNECTION</span> requests
+      <br/>
+      <span id="dom_updated_8281">NO CONNECTION</span> updated 
+      <br/>
+      <span id="dom_celcius_8281" class="temperature">NO CONNECTION</span> C
+      <br/>
+      <span id="dom_successes_8281">NO CONNECTION</span> successes
+      <br/>
+   
+      <p>
+         <button onclick="init()">Connect</button>
+         <button onclick="loop()">Refresh</button>
+      </p>
+      <span class="footer">pachube_ie6_v6b.html</span>
+   </span>
+
+</body>
+
+
+</html>

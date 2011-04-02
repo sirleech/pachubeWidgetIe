@@ -1,0 +1,30 @@
+<html>
+<head>
+<script type="text/javascript">
+
+
+function loadXMLDoc() {
+		if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp = new XMLHttpRequest();
+		} else {// code for IE6, IE5
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.onreadystatechange = function() {
+			//alert("onreadystatechange");
+			//alert("readyState=" + xmlhttp.readyState +"| HTTP status= " + xmlhttp.status);
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {				
+				document.getElementById("myDiv").innerHTML = xmlhttp.responseText;
+			}
+		}
+		xmlhttp.open("GET", "http://www.pachube.com/api/feeds/8281.xml", true);
+		xmlhttp.send();
+	}
+</script>
+</head>
+<body>
+	<div id="myDiv">
+		<h2>Let AJAX change this text</h2>
+	</div>
+	<button type="button" onclick="loadXMLDoc();">Change Content</button>
+</body>
+</html>

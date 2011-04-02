@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+<html>
+<head>
+<title>pachube_ie6_v3.html</title>
+<script>
+
+
+var i = Number(1);
+var timer;
+
+////////////////////////////////////////////
+function init()
+{
+   if(timer){
+      timer = window.clearInterval(timer);
+      timer = null;
+   }
+   // load Pachube XML every N seconds
+   // do not exceed 50 connections every 3 minutes
+   // or 16.6 per minute
+   seconds = 15;
+   ms = seconds * 1000; 
+   timer = window.setInterval("loop()",ms);
+    
+   //for(var i=0;i<10;i++)
+}
+
+
+////////////////////////////////////////////
+function loop()
+{      
+   // this only works in IE 6!
+   xml_8281 = new ActiveXObject('msxml.domdocument');
+   xml_8281.async = true;
+   xml_8281.load("http://www.pachube.com/api/feeds/8281.xml");
+   
+   xml_8281.onreadystatechange = refresh_8281;       
+}
+
+function refresh_8281()
+{
+   if (xml_8281)
+   {
+      var status = xml_8281.selectSingleNode("//eeml/environment/status");
+      var reqs = i.toString();
+      var updated = xml_8281.selectSingleNode("//eeml/environment/@updated");
+      var localDateTime = new Date("1 July 2010");   
+      var celcius = xml_8281.selectSingleNode("//eeml/environment/data[0]/value")
+      var successes = xml_8281.selectSingleNode("//eeml/environment/data[3]/value")
+      var environment = xml_8281.selectSingleNode("//eeml/environment");
+        
+      var pachubeDate = pachubeDateToJsDate(updated.text);
+      var pachubeDtsStr = pachubeDate.toDateString() + " " 
+      		+ pachubeDate.toTimeString();
+		
+      //var str = "Thu Jul 01 03:22:06 UTC 2010";    
+      //var localDate = Date.parse(str); 
+
+      var currentDate = new Date();
+      
+      setElement("dom_localTime",currentDate.toDateString() + currentDate.toTimeString());
+      setElement("dom_toUTCString",currentDate.toUTCString());
+
+      
+      setElement("dom_status",status.text);
+      setElement("dom_reqs",reqs);
+      setElement("dom_updatedPachube",updated.text);
+      setElement("dom_updated",pachubeDtsStr);
+      setElement("dom_celcius",celcius.text);
+      setElement("dom_successes",successes.text);     
+     
+      i++;
+   }
+}
+
+////////////////////////////////////////////
+function pachubeDateToJsDate(pachubeStr)
+{
+	//pachube XML update date
+    // 2010-07-01T21:40:57Z
+	// 01234567890123456789
+	
+	var year = pachubeStr.substring(0,4);
+	var month = pachubeStr.substring(5,7);
+	var day = pachubeStr.substring(8,10);
+	var hours = pachubeStr.substring(11,13);	
+	var minutes = pachubeStr.substring(14,16);
+	var seconds = pachubeStr.substring(17,19);
+
+	//subtract one as 0 is the beginning...
+	//month--;day--;hours--;minutes--;seconds--;
+	//alert(year);alert(month);alert(day);alert(hours);alert(minutes);alert(seconds);
+	
+	//new Date(year, month, day, hours, minutes, seconds, milliseconds)
+   	var date = new Date(year, month, day, hours, minutes, seconds);
+      
+    // chop off the UTM adjustment as this is UTM time
+    // dts = Sun Aug 1 2010 23:16:07 UTC+1000 
+    //       01234567890123456789012345678901
+    //var dts = date.toDateString() + " " + date.toTimeString();
+    
+    // dtsUTM = Sun Aug 1 2010 23:16:07 UTC
+    //var dtsUTM = dts.substring(0,27);
+    //alert(dtsUTM);
+    //var ms = Date.parse(dtsUTM);
+    
+    //convert to UTM, subtract 10 hours for canberra +10 UTM    
+    var tenHrsInMs = 10 * 60 * 1000;
+    var adjDateMs = date.getTime() + tenHrsInMs;
+    
+    //alert("getTime= " + date.getTime());
+    //alert("+ tenHrsInMs= " + tenHrsInMs);
+    //alert("adjDateMs= " + adjDateMs);
+    
+    // 10 hours = 36,000,000 ms
+    
+    var offset = date.getTimezoneOffset() * 1000 * 60 *-1;
+    //alert (offset);
+    
+    //alert(date.getTimezoneOffset());
+    
+    date.setTime(date.getTime() + offset);    
+    
+	return date;
+}
+
+
+////////////////////////////////////////////
+function setElement(domElementId,value)
+{
+   var elem = document.getElementById(domElementId);
+   elem.innerHTML = value;   
+}
+
+
+</script>
+</head>
+
+<body bgcolor="#EEEEEE" onload="init();">
+   <a href="http://c204dv1c.csda.gov.au/trigs/prod"><img src="triggerScreen.gif" border="0"/></a>
+   
+   <br/>   
+   localTime: <span id="dom_localTime">NO CONNECTION</span>
+   <br/>
+   toUTCString: <span id="dom_toUTCString">NO CONNECTION</span>
+   <br/>
+
+
+   <br/>
+   
+   Status: <b><span id="dom_status">NO CONNECTION</span></b>
+   <br/>
+   <span id="dom_reqs">NO CONNECTION</span> = requests
+   <br/>
+   <span id="dom_updatedPachube">NO CONNECTION</span> = updated pchb
+   <br/>
+   <span id="dom_updated">NO CONNECTION</span> = updated 
+   <br/>
+   <span id="dom_celcius">NO CONNECTION</span>
+   <br/>
+   <span id="dom_successes">NO CONNECTION</span> successes
+
+
+</body>
+
+
+</html>

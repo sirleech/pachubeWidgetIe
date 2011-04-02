@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<html>
+<head>
+<title>TGMS_PACHUBE</title>
+<script>
+
+
+var i = Number(1);
+var timer;
+
+////////////////////////////////////////////
+function init()
+{
+   if(timer){
+      timer = window.clearInterval(timer);
+      timer = null;
+   }
+   //load Pachube XML every N seconds
+   seconds = 15;
+   ms = seconds * 1000; 
+   timer = window.setInterval("loop()",ms);
+    
+   //for(var i=0;i<10;i++)
+}
+
+
+////////////////////////////////////////////
+function loop()
+{      
+   xml_8281 = new ActiveXObject('msxml.domdocument');
+   xml_8281.async = true;
+   xml_8281.load("http://www.pachube.com/api/feeds/8281.xml");
+   
+   xml_8281.onreadystatechange = refresh_8281;       
+}
+
+function refresh_8281()
+{
+   if (xml_8281)
+   {
+      var status = xml_8281.selectSingleNode("//eeml/environment/status");
+      var reqs = i.toString();
+      var updated = xml_8281.selectSingleNode("//eeml/environment/@updated");
+      var localDateTime = new Date("1 July 2010");   
+      var celcius = xml_8281.selectSingleNode("//eeml/environment/data[0]/value")
+      var successes = xml_8281.selectSingleNode("//eeml/environment/data[3]/value")
+      var environment = xml_8281.selectSingleNode("//eeml/environment");
+      
+      // updatedDate = new Date(updated.text);
+      // Date time???? UTC? From Jan 1, 1970?
+      // 2010-07-01T03:22:06Z   
+      // Canberra GMT + 10
+      
+      var str = "Thu Jul 01 03:22:06 UTC 2010";    
+      var localDate = Date.parse(str); 
+
+      var currentDate = pachubeDateToJsDate("sdfsdf"); 
+      
+      setElement("dom_localTime",currentDate.toDateString() + currentDate.toTimeString());
+      setElement("dom_toUTCString",currentDate.toUTCString());
+
+      
+      setElement("dom_status",status.text);
+      setElement("dom_reqs",reqs);
+      setElement("dom_updated",updated.text);
+      setElement("dom_celcius",celcius.text);
+      setElement("dom_successes",successes.text);     
+     
+      i++;
+   }
+}
+
+////////////////////////////////////////////
+function pachubeDateToJsDate(pachubeDateString)
+{
+   var date = new Date();
+   return date;
+}
+
+
+////////////////////////////////////////////
+function setElement(domElementId,value)
+{
+   var elem = document.getElementById(domElementId);
+   elem.innerHTML = value;   
+}
+
+
+</script>
+</head>
+
+<body bgcolor="#EEEEEE" onload="init();">
+   <a href="http://c204dv1c.csda.gov.au/trigs/prod"><img src="triggerScreen.gif" border="0"/></a>
+   
+   localTime: <span id="dom_localTime">NO CONNECTION</span>
+   <br/>
+   toUTCString: <span id="dom_toUTCString">NO CONNECTION</span>
+   <br/>
+
+
+   <br/>
+   
+   Status: <b><span id="dom_status">NO CONNECTION</span></b>
+   <br/>
+   <span id="dom_reqs">NO CONNECTION</span> = requests
+   <br/>
+   <span id="dom_updated">NO CONNECTION</span> = updated 
+   <br/>
+   <span id="dom_celcius">NO CONNECTION</span> c
+   <br/>
+   <span id="dom_successes">NO CONNECTION</span> successes
+
+
+</body>
+
+
+</html>

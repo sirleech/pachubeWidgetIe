@@ -1,0 +1,13 @@
+<html> 
+  <head> 
+  <script type="text/javascript" src="xmlhttp.js"></script> 
+  <script type="text/javascript"> 
+    var AJAX_URL="http://www.fettig.net/playground/ajax-subdomain/ajaxdata.php";
+    function gotResult(status, headers, result) {
+      document.domain = "deadlyspore.com";
+      window.parent.gotTime(result);
+    }
+    getUrl(AJAX_URL, gotResult);
+  </script> 
+  </head> 
+</html> 

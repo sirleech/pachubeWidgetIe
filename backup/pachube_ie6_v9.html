@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="styles.css" />
+<title>V9 Feed Functions</title>
+<script>
+
+
+var i = Number(1);
+var timer; var timer2;
+var red = "#ff0000";
+var green = "#00CC00";
+var apikey = "5df9aa3f6623b1958a43632ea16397046f0affd89393649257a3039e6f854b6a";
+
+var feedid = "8281";
+var queryFreq = 15; //seconds
+
+////////////////////////////////////////////
+function init()
+{
+   ms = queryFreq * 1000; 
+   timer = window.setInterval("loop()",ms);
+   //timer2 = window.setInterval("clock()",1000);
+}
+
+
+////////////////////////////////////////////
+//  Main Loop every [queryFreq] seconds
+//  Pachube limit: do not exceed 50 connections every 3 minutes
+//  or 16.6 per minute
+///////////////////////////////////////////
+function loop()
+{      
+   // this only works in IE
+   XHRObject = new ActiveXObject('msxml.domdocument');
+   XHRObject.async = true;
+   XHRObject.load("https://www.pachube.com/api/feeds/"+feedid+".xml?key="+apikey);   
+   XHRObject.onreadystatechange = refresh;       
+}
+
+////////////////////////////////////////////
+//function clock()
+//{
+//  var currentDate = new Date();
+//   setElement("dom_localTime",currentDate.toDateString() 
+//             + " " +  currentDate.toTimeString());
+//}
+
+////////////////////////////////////////////
+function refresh()
+{
+   var date = new Date();
+   
+   if (XHRObject)
+   {
+	  var title = XHRObject.selectSingleNode("//eeml/environment/title");
+      var id = XHRObject.selectSingleNode("//eeml/environment/@id");
+	  var status = XHRObject.selectSingleNode("//eeml/environment/status");
+      var reqs = i.toString();
+      var updated = XHRObject.selectSingleNode("//eeml/environment/@updated");
+      var localDateTime = new Date("1 July 2010");   
+      var celcius = XHRObject.selectSingleNode("//eeml/environment/data[0]/value")
+      var successes = XHRObject.selectSingleNode("//eeml/environment/data[3]/value")
+      var environment = XHRObject.selectSingleNode("//eeml/environment");
+        
+      var pachubeDate = pachubeDateToJsDate(updated.text);
+      var pachubeDtsStr = pachubeDate.toDateString() + " " 
+      		+ pachubeDate.toTimeString();
+
+      var statusColor = status.text;
+
+	  if (status.text == "live") 	
+         statusColor = statusColor.fontcolor(green);
+      else
+         statusColor = statusColor.fontcolor(red);
+      
+      setElement("dom_feedTitle",title.text);
+      setElement("dom_feedid",id.text);
+      setElement("dom_status",statusColor);
+      setElement("dom_reqs",reqs);
+      setElement("dom_updated",pachubeDtsStr);
+      setElement("dom_celcius",celcius.text);
+      setElement("dom_successes",successes.text);
+     
+      i++;
+   }
+}
+
+////////////////////////////////////////////
+function pachubeDateToJsDate(pachubeStr)
+{
+	//pachube XML update date
+    // 2010-07-01T21:40:57Z
+	// 01234567890123456789
+	
+	var year = pachubeStr.substring(0,4);
+	var month = pachubeStr.substring(5,7);
+	month --;
+    var day = pachubeStr.substring(8,10);
+	var hours = pachubeStr.substring(11,13);	
+	var minutes = pachubeStr.substring(14,16);
+	var seconds = pachubeStr.substring(17,19);
+
+   	var date = new Date(year, month, day, hours, minutes, seconds);    
+    
+    // +10 hours = +36,000,000 ms = offsetMs for Canberra UTM + 10:00   
+    var offsetMs = date.getTimezoneOffset() * 1000 * 60 * -1;
+    date.setTime(date.getTime() + offsetMs);    
+	return date;
+}
+
+
+////////////////////////////////////////////
+function setElement(domElementId,value)
+{
+   var elem = document.getElementById(domElementId);
+   elem.innerHTML = value;   
+}
+
+
+</script>
+</head>
+
+<body onload="init();">
+
+<h1><span id="dom_feedTitle">NO CONNECTION</span></h1>
+<span id="feedId">Pachube ID: <span id="dom_feedid">NO CONNECTION</span></span>
+<br/>
+<!-- <span id="dom_localTime">NO CONNECTION</span>
+local time
+<br /> -->
+
+Status:
+<b><span id="dom_status">NO CONNECTION</span></b>
+<br />
+<span id="dom_reqs">NO CONNECTION</span>
+requests
+<br />
+<span id="dom_updated">NO CONNECTION</span>
+updated
+<br />
+<span id="temperature"> <span id="dom_celcius"
+	class="temperature">n</span> C </span>
+<br />
+<span id="dom_successes">NO CONNECTION</span>
+successes
+<br />
+
+<p>
+<button onclick="loop()">Refresh</button>
+</p>
+
+<span class="footer">pachube_ie6_v9.html</span>
+
+</body>
+
+
+</html>

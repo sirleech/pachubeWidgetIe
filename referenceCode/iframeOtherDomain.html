@@ -1,0 +1,15 @@
+<html> 
+  <head> 
+  <script type="text/javascript"> 
+    document.domain="deadlyspore.com";
+    function gotTime(result) {
+      document.getElementById('time').innerHTML = "Server timestamp: " + result;
+    }
+  </script> 
+  </head> 
+  <body> 
+    Single XmlHttpRequest. Works in all modern browsers.
+    <div id="time"></div> 
+    <iframe src="iframe.html"></iframe> 
+  </body> 
+</html> 

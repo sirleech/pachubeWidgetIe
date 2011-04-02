@@ -1,0 +1,20 @@
+<html>
+	<script language="javascript">
+	var str = "Formatting some text.";
+	str = str.fontsize("6"); // sets size of the text to 6
+	str = str.fontcolor("#ff0000"); // sets color of the text to #006400
+	str = str.bold(); // makes text bold
+	document.write (str);
+
+	function load(){
+		elem = document.getElementById("colorText");
+		elem.innerHTML = str;
+	}
+	
+	</script>
+	
+	<body onload="load()">
+		<span id="colorText">test</span>
+	
+	</body>
+</html>
